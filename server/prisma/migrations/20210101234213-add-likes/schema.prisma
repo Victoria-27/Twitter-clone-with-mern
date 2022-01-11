@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource postgresql {
+  provider = "postgresql"
+  url = "***"
+}
+
+model Tweet {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  content   String?
+  likes LikedTweet[]
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  Int?
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String   @default("")
+  name     String?
+  tweets   Tweet[]
+  Profile  Profile?
+  likedTweet LikedTweet[]
+}
+model LikedTweet {
+  id        Int      @id @default(autoincrement())
+  tweet     Tweet  
+  likedAt   DateTime @default(now())
+  userId    Int?     @unique
+  User      User?    @relation(fields: [userId], references: [id])
+}
+
+model Profile {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  bio       String?
+  location  String?
+  website   String?
+  avatar    String?
+  userId    Int?     @unique
+  User      User?    @relation(fields: [userId], references: [id])
+}
